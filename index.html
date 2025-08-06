@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap 5 Grid System - Interactive Slides</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --accent-color: #06b6d4;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .slideshow-container {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .slide {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            margin: 20px;
+            max-width: 1200px;
+            width: 100%;
+            animation: slideIn 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            border-radius: 20px 20px 0 0;
+        }
+
+        .slide h1 {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .slide h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .slide h2 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .slide p {
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .demo-grid {
+            margin: 30px 0;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 15px;
+            border: 2px dashed var(--primary-color);
+        }
+
+        .demo-row {
+            background: rgba(99, 102, 241, 0.1);
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            margin: 10px 0;
+            padding: 15px;
+            position: relative;
+        }
+
+        .demo-row::before {
+            content: 'row';
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .demo-col {
+            background: rgba(139, 92, 246, 0.8);
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .demo-col:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .breakpoint-indicator {
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 10px 5px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .code-block {
+            background: #1a1a2e;
+            color: #16f4d0;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .code-block::before {
+            content: '</>';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            color: var(--text-dark);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .feature-list li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            top: 15px;
+            font-size: 20px;
+        }
+
+        .responsive-demo {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .screen-size {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .xs { background: #fee2e2; color: #dc2626; }
+        .sm { background: #fef3c7; color: #d97706; }
+        .md { background: #d1fae5; color: #059669; }
+        .lg { background: #dbeafe; color: #2563eb; }
+        .xl { background: #ede9fe; color: #7c3aed; }
+        .xxl { background: #fce7f3; color: #be185d; }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .slide h1 {
+                font-size: 1.8rem;
+            }
+            
+            .navigation {
+                bottom: 20px;
+            }
+            
+            .nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow-container">
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">8</span>
+        </div>
+
+        <!-- Slide 1: Introduction -->
+        <div class="slide active">
+            <h1><i class="fas fa-th-large text-primary"></i> Bootstrap 5 Grid System</h1>
+            <h2>Responsive Layout Made Simple</h2>
+            <p>Bootstrap's grid system is a powerful flexbox-based layout system that enables you to create responsive, mobile-first layouts with ease. It uses a series of containers, rows, and columns to layout and align content.</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="feature-list">
+                        <li><strong>Mobile-First Approach:</strong> Designed for mobile devices first, then scales up</li>
+                        <li><strong>Flexbox Based:</strong> Built on CSS Flexbox for better alignment and distribution</li>
+                        <li><strong>12-Column System:</strong> Divides the page into 12 equal columns</li>
+                        <li><strong>Responsive Breakpoints:</strong> 6 different screen size breakpoints</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <div class="demo-grid">
+                        <div class="demo-row">
+                            <div class="row">
+                                <div class="col-4"><div class="demo-col">col-4</div></div>
+                                <div class="col-4"><div class="demo-col">col-4</div></div>
+                                <div class="col-4"><div class="demo-col">col-4</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Container -->
+        <div class="slide">
+            <h1><i class="fas fa-box text-primary"></i> Container</h1>
+            <h2>The Foundation of Your Layout</h2>
+            <p>Containers are the most basic layout element in Bootstrap and are required when using the grid system. They center and horizontally pad your content.</p>
+            
+            <div class="row mt-4">
+                <div class="col-lg-6">
+                    <h3>Types of Containers:</h3>
+                    <div class="breakpoint-indicator">.container</div>
+                    <p>Responsive fixed-width container with max-widths at each breakpoint</p>
+                    
+                    <div class="breakpoint-indicator">.container-fluid</div>
+                    <p>Full-width container that spans the entire viewport width</p>
+                    
+                    <div class="breakpoint-indicator">.container-{breakpoint}</div>
+                    <p>100% width until the specified breakpoint</p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="code-block">
+&lt;!-- Fixed-width container --&gt;
+&lt;div class="container"&gt;
+  Content here...
+&lt;/div&gt;
+
+&lt;!-- Full-width container --&gt;
+&lt;div class="container-fluid"&gt;
+  Content here...
+&lt;/div&gt;
+
+&lt;!-- Responsive container --&gt;
+&lt;div class="container-md"&gt;
+  Content here...
+&lt;/div&gt;
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-grid mt-4">
+                <div style="background: rgba(6, 182, 212, 0.1); border: 2px solid #06b6d4; border-radius: 10px; padding: 15px; position: relative;">
+                    <span style="position: absolute; top: -10px; left: 10px; background: #06b6d4; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">container</span>
+                    <p class="text-center mb-0">Container provides centered content with responsive max-widths</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Rows -->
+        <div class="slide">
+            <h1><i class="fas fa-grip-lines text-primary"></i> Rows</h1>
+            <h2>Horizontal Groups of Columns</h2>
+            <p>Rows are wrappers for columns. Each row creates a horizontal group of columns and must be placed within a container.</p>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <h3>Key Features of Rows:</h3>
+                    <ul class="feature-list">
+                        <li><strong>Flexbox Container:</strong> Uses display: flex for column alignment</li>
+                        <li><strong>Negative Margins:</strong> Counteract container padding</li>
+                        <li><strong>Gutters:</strong> Provide spacing between columns</li>
+                        <li><strong>Column Wrapping:</strong> Columns wrap to new line when total exceeds 12</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <div class="code-block">
+&lt;div class="container"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col"&gt;
+      Column content
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-grid mt-4">
+                <div class="demo-row">
+                    <div class="row">
+                        <div class="col"><div class="demo-col">Column 1</div></div>
+                        <div class="col"><div class="demo-col">Column 2</div></div>
+                        <div class="col"><div class="demo-col">Column 3</div></div>
+                    </div>
+                </div>
+                <div class="demo-row">
+                    <div class="row">
+                        <div class="col-8"><div class="demo-col">col-8</div></div>
+                        <div class="col-4"><div class="demo-col">col-4</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Columns -->
+        <div class="slide">
+            <h1><i class="fas fa-columns text-primary"></i> Columns</h1>
+            <h2>The Building Blocks of Your Layout</h2>
+            <p>Columns are the individual content areas within rows. Bootstrap's 12-column system allows for flexible layouts.</p>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3>Column Types:</h3>
+                    <div class="breakpoint-indicator">.col</div>
+                    <p>Equal-width columns that automatically adjust</p>
+                    
+                    <div class="breakpoint-indicator">.col-{number}</div>
+                    <p>Specific width columns (1-12)</p>
+                    
+                    <div class="breakpoint-indicator">.col-{breakpoint}-{number}</div>
+                    <p>Responsive columns with breakpoint-specific widths</p>
+                </div>
+                <div class="col-lg-6">
+                    <div class="code-block">
+&lt;!-- Equal width columns --&gt;
+&lt;div class="row"&gt;
+  &lt;div class="col"&gt;1 of 3&lt;/div&gt;
+  &lt;div class="col"&gt;2 of 3&lt;/div&gt;
+  &lt;div class="col"&gt;3 of 3&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Specific width columns --&gt;
+&lt;div class="row"&gt;
+  &lt;div class="col-sm-6"&gt;50%&lt;/div&gt;
+  &lt;div class="col-sm-6"&gt;50%&lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-grid">
+                <div class="demo-row">
+                    <div class="row">
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                        <div class="col-1"><div class="demo-col">1</div></div>
+                    </div>
+                </div>
+                <div class="demo-row">
+                    <div class="row">
+                        <div class="col-3"><div class="demo-col">col-3</div></div>
+                        <div class="col-6"><div class="demo-col">col-6</div></div>
+                        <div class="col-3"><div class="demo-col">col-3</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Breakpoints -->
+        <div class="slide">
+            <h1><i class="fas fa-mobile-alt text-primary"></i> Breakpoints</h1>
+            <h2>Responsive Design Points</h2>
+            <p>Bootstrap includes six default breakpoints for building responsively. These breakpoints are based on minimum viewport widths.</p>
+            
+            <div class="responsive-demo">
+                <div class="screen-size xs">
+                    <strong>xs</strong><br>
+                    &lt; 576px<br>
+                    Extra Small (Phones)
+                </div>
+                <div class="screen-size sm">
+                    <strong>sm</strong><br>
+                    ≥ 576px<br>
+                    Small (Landscape Phones)
+                </div>
+                <div class="screen-size md">
+                    <strong>md</strong><br>
+                    ≥ 768px<br>
+                    Medium (Tablets)
+                </div>
+                <div class="screen-size lg">
+                    <strong>lg</strong><br>
+                    ≥ 992px<br>
+                    Large (Desktops)
+                </div>
+                <div class="screen-size xl">
+                    <strong>xl</strong><br>
+                    ≥ 1200px<br>
+                    Extra Large (Large Desktops)
+                </div>
+                <div class="screen-size xxl">
+                    <strong>xxl</strong><br>
+                    ≥ 1400px<br>
+                    Extra Extra Large (Larger Desktops)
+                </div>
+            </div>
+
+            <div class="code-block mt-4">
+&lt;!-- Mixed breakpoints example --&gt;
+&lt;div class="row"&gt;
+  &lt;div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"&gt;
+    Responsive Column
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- This column will be:
+     - 12 columns wide on extra small screens
+     - 6 columns wide on small screens and up
+     - 4 columns wide on medium screens and up
+     - 3 columns wide on large screens and up
+     - 2 columns wide on extra large screens and up --&gt;
+            </div>
+        </div>
+
+        <!-- Slide 6: Responsive Example -->
+        <div class="slide">
+            <h1><i class="fas fa-expand-arrows-alt text-primary"></i> Responsive Layout Example</h1>
+            <h2>See Breakpoints in Action</h2>
+            <p>This example demonstrates how columns respond to different screen sizes. Resize your browser window to see the layout change!</p>
+            
+            <div class="demo-grid">
+                <h4 class="text-center mb-3">Responsive Grid Demo</h4>
+                <div class="demo-row">
+                    <div class="row">
+                        <div class="col-12 col-md-8 col-lg-6">
+                            <div class="demo-col">
+                                <strong>Main Content</strong><br>
+                                <small>col-12 col-md-8 col-lg-6</small>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-6">
+                            <div class="demo-col">
+                                <strong>Sidebar</strong><br>
+                                <small>col-12 col-md-4 col-lg-6</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-row">
+                    <div class="row">
+                        <div class="col-6 col-sm-4 col-lg-3">
+                            <div class="demo-col">
+                                <strong>Card 1</strong><br>
+                                <small>col-6 col-sm-4 col-lg-3</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-4 col-lg-3">
+                            <div class="demo-col">
+                                <strong>Card 2</strong><br>
+                                <small>col-6 col-sm-4 col-lg-3</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-4 col-lg-3">
+                            <div class="demo-col">
+                                <strong>Card 3</strong><br>
+                                <small>col-6 col-sm-4 col-lg-3</small>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-12 col-lg-3">
+                            <div class="demo-col">
+                                <strong>Card 4</strong><br>
+                                <small>col-6 col-sm-12 col-lg-3</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-4">
+                <i class="fas fa-info-circle"></i>
+                <strong>Try This:</strong> Resize your browser window to see how the layout adapts to different screen sizes!
+            </div>
+        </div>
+
+        <!-- Slide 7: Advanced Features -->
+        <div class="slide">
+            <h1><i class="fas fa-cogs text-primary"></i> Advanced Grid Features</h1>
+            <h2>Beyond Basic Layouts</h2>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3>Alignment Options:</h3>
+                    <ul class="feature-list">
+                        <li><strong>Vertical Alignment:</strong> align-items-start, center, end</li>
+                        <li><strong>Horizontal Alignment:</strong> justify-content-start, center, end</li>
+                        <li><strong>Self Alignment:</strong> align-self-start, center, end</li>
+                        <li><strong>Auto Margins:</strong> ms-auto, me-auto for column positioning</li>
+                    </ul>
+                    
+                    <h3>Ordering:</h3>
+                    <ul class="feature-list">
+                        <li><strong>Visual Order:</strong> order-1 through order-5</li>
+                        <li><strong>Responsive Ordering:</strong> order-sm-1, order-md-2, etc.</li>
+                        <li><strong>First/Last:</strong> order-first, order-last</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <div class="code-block">
+&lt;!-- Vertical alignment --&gt;
+&lt;div class="row align-items-center"&gt;
+  &lt;div class="col"&gt;Centered content&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Horizontal alignment --&gt;
+&lt;div class="row justify-content-center"&gt;
+  &lt;div class="col-6"&gt;Centered column&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Column ordering --&gt;
+&lt;div class="row"&gt;
+  &lt;div class="col order-last"&gt;First in DOM, last visually&lt;/div&gt;
+  &lt;div class="col order-first"&gt;Second in DOM, first visually&lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-grid">
+                <div class="demo-row">
+                    <div class="row justify-content-center">
+                        <div class="col-4"><div class="demo-col">Centered</div></div>
+                    </div>
+                </div>
+                <div class="demo-row">
+                    <div class="row">
+                        <div class="col order-3"><div class="demo-col">Third (order-3)</div></div>
+                        <div class="col order-1"><div class="demo-col">First (order-1)</div></div>
+                        <div class="col order-2"><div class="demo-col">Second (order-2)</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Best Practices -->
+        <div class="slide">
+            <h1><i class="fas fa-thumbs-up text-primary"></i> Best Practices</h1>
+            <h2>Tips for Effective Grid Usage</h2>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <h3>Do's:</h3>
+                    <ul class="feature-list">
+                        <li><strong>Mobile-First:</strong> Start with mobile layout, then enhance for larger screens</li>
+                        <li><strong>Semantic HTML:</strong> Use appropriate HTML elements within grid structure</li>
+                        <li><strong>Consistent Gutters:</strong> Maintain consistent spacing throughout your design</li>
+                        <li><strong>Test Responsiveness:</strong> Always test on multiple screen sizes</li>
+                        <li><strong>Use Containers:</strong> Always wrap rows in containers</li>
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <h3>Don'ts:</h3>
+                    <ul class="feature-list">
+                        <li><strong>Don't nest rows directly:</strong> Always wrap rows in containers or columns</li>
+                        <li><strong>Don't exceed 12 columns:</strong> Columns will wrap to next line</li>
+                        <li><strong>Don't skip breakpoints:</strong> Consider all screen sizes</li>
+                        <li><strong>Don't ignore accessibility:</strong> Ensure proper heading hierarchy</li>
+                        <li><strong>Don't over-complicate:</strong> Keep layouts simple and maintainable</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="demo-grid">
+                <div class="alert alert-success">
+                    <h4><i class="fas fa-check-circle"></i> Perfect Grid Structure</h4>
+                    <div class="code-block mt-3">
+&lt;div class="container"&gt;
+  &lt;div class="row"&gt;
+    &lt;div class="col-12 col-md-6 col-lg-4"&gt;
+      &lt;div class="card"&gt;
+        &lt;div class="card-body"&gt;
+          Content here...
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <h3 class="text-primary">🎉 Congratulations!</h3>
+                <p class="lead">You now understand Bootstrap 5's powerful grid system. Start building responsive layouts with confidence!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+        
+        function showSlide(index) {
+            // Hide all slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // Show current slide
+            slides[index].classList.add('active');
+            
+            // Update counter
+            document.getElementById('currentSlide').textContent = index + 1;
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+            
+            // Add entrance animation
+            slides[index].style.animation = 'none';
+            setTimeout(() => {
+                slides[index].style.animation = 'slideIn 0.8s ease-out';
+            }, 10);
+        }
+        
+        function changeSlide(direction) {
+            const newIndex = currentSlideIndex + direction;
+            
+            if (newIndex >= 0 && newIndex < totalSlides) {
+                currentSlideIndex = newIndex;
+                showSlide(currentSlideIndex);
+            }
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            } else if (e.key === 'ArrowRight') {
+                changeSlide(1);
+            }
+        });
+        
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    changeSlide(1);
+                } else {
+                    // Swipe right - previous slide
+                    changeSlide(-1);
+                }
+            }
+        }
+        
+        // Auto-advance slides (optional - can be uncommented)
+        // setInterval(() => {
+        //     if (currentSlideIndex < totalSlides - 1) {
+        //         changeSlide(1);
+        //     } else {
+        //         currentSlideIndex = -1;
+        //         changeSlide(1);
+        //     }
+        // }, 10000);
+        
+        // Initialize first slide
+        showSlide(0);
+        
+        // Add interactive hover effects to demo columns
+        document.addEventListener('DOMContentLoaded', function() {
+            const demoCols = document.querySelectorAll('.demo-col');
+            demoCols.forEach(col => {
+                col.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.05)';
+                });
+                
+                col.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // Add click effect to breakpoint indicators
+            const indicators = document.querySelectorAll('.breakpoint-indicator');
+            indicators.forEach(indicator => {
+                indicator.addEventListener('click', function() {
+                    this.style.animation = 'none';
+                    setTimeout(() => {
+                        this.style.animation = 'pulse 2s infinite';
+                    }, 10);
+                });
+            });
+        });
+        
+        // Add current screen size indicator
+        function updateScreenIndicator() {
+            const width = window.innerWidth;
+            let currentBreakpoint = '';
+            
+            if (width < 576) {
+                currentBreakpoint = 'xs (<576px)';
+            } else if (width < 768) {
+                currentBreakpoint = 'sm (≥576px)';
+            } else if (width < 992) {
+                currentBreakpoint = 'md (≥768px)';
+            } else if (width < 1200) {
+                currentBreakpoint = 'lg (≥992px)';
+            } else if (width < 1400) {
+                currentBreakpoint = 'xl (≥1200px)';
+            } else {
+                currentBreakpoint = 'xxl (≥1400px)';
+            }
+            
+            // Update counter to show current breakpoint
+            const counter = document.querySelector('.slide-counter');
+            counter.innerHTML = `
+                <div style="font-size: 0.9em; margin-bottom: 5px;">
+                    Current: <strong style="color: var(--primary-color);">${currentBreakpoint}</strong>
+                </div>
+                <div>
+                    <span id="currentSlide">${currentSlideIndex + 1}</span> / <span id="totalSlides">${totalSlides}</span>
+                </div>
+            `;
+        }
+        
+        // Update screen indicator on resize
+        window.addEventListener('resize', updateScreenIndicator);
+        updateScreenIndicator();
+    </script>
+</body>
+</html>
